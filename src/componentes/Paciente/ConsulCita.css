@@ -1,0 +1,79 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #a9c3c7;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  width: 100%;
+  background-color: #c0d9dd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px black;
+}
+
+.home img, .back1 {
+  width: 30px;
+  height: 30px;
+  margin-left: 20px;
+}
+
+.citas-container {
+  background: #d1e6ea;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #599ec3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+  background-color: #407a9c;
+}
+
+.citas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.citas-table th, .citas-table td {
+  border: 1px solid #aaa;
+  padding: 10px;
+}

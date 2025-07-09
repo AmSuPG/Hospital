@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,594;1,594&display=swap');
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background-color: #c0d9dd; /* un azul claro como en la imagen */
+}
+.logo {
+  font-family:"Rubik", sans-serif;
+  font-size: 35px;
+  font-weight:600px;
+  color: #2c2c2c;
+  text-shadow: 2px 2px 5px rgb(125, 116, 116)
+}
+.home{
+  display: flex;
+  flex-direction: column;
+
+}
+.body1{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #a9c3c7;
+  padding: 10px;
+  margin: 0;
+  min-height: 100vh;
+}
+.nav a {
+  font-size: 18px;
+  color: #2c2c2c;
+  text-decoration: none;
+  margin-left: 20px;
+  font-family:"Rubik", sans-serif;
+}
+
+.nav a:hover {
+  text-decoration:double;
+  text-shadow: 2px 2px 5px black;
+}
+.className {
+  font-size: 24px;
+  color: #2c2c2c;
+}
+.home .medico-img-container {
+  width: 500px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.intro1{
+  font-size: 45px;
+  text-shadow: 2px 2px 5px rgb(125, 116, 116)
+}
+.present {
+  text-align:left;
+  margin: 20px;
+  width: 300px;
+}

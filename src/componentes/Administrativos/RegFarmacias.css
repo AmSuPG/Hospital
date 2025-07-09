@@ -1,0 +1,63 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #a9c3c7;
+}
+
+.farma-form {
+  background: #c0d9dd;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  width: 100%;
+  width: 600px;
+  font-family: Arial, sans-serif;
+}
+
+.farma-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.farma-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.farma-form button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 12px;
+  background-color: #00838f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.farma-form button:hover {
+  background-color: #006064;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-link a {
+  color: #00838f;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.farma-form button:hover {
+  background-color: #004d40;
+  transform: scale(1.05);
+}

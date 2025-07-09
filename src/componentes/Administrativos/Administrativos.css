@@ -1,0 +1,74 @@
+.header {
+  align-items: center;
+  padding: 15px 50px;
+  background-color: #c0d9dd; /* un azul claro como en la imagen */
+  font-family:"Rubik", sans-serif;
+  font-size: 35px;
+  font-weight:600px;
+  color: #2c2c2c;
+  text-shadow: 2px 2px 5px rgb(125, 116, 116)
+}
+
+.body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #a9c3c7;
+}
+.register-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #a9c3c7;
+}
+.register-form {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 5px 27px 16px rgba(153,196,211,0.95);
+  border-radius: 12px;
+  background-color: #c0d9dd;
+  padding: 40px;
+  width: 600px;
+  margin: 20px;
+}
+.admin-img {
+  width: 500px;
+  border-radius: 10px;
+}
+.register-form label {
+  font-size: 20px;
+  color: #2c2c2c;
+}
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="number"],
+.register-form input[type="tel"],
+.register-form input[type="date"],
+.register-form input[type="time"]{
+  padding: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.register-container label {
+  margin-left: 5px;
+  font-size: 20px;
+}
+
+button {
+  margin-top: 20px;
+  background-color: #2c2c2c;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1a1a1a;
+}
