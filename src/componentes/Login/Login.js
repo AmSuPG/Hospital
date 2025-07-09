@@ -1,70 +1,84 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import "./Login.css";
+import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function LoginForm() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
-  const history = useHistory();
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    const data = {
-      correo,
-      password,
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Evita recargar la página
 
     try {
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ correo, password })
       });
 
       if (!response.ok) {
-        alert("Credenciales inválidas");
+        const err = await response.json();
+        setError(err.message || "Error al iniciar sesión");
         return;
       }
 
-      const result = await response.json();
-      const token = result.token;
+      const data = await response.json();
+      console.log("Login exitoso:", data.token);
+      // Decodifica el token para extraer el permiso
+        const payload = jwtDecode(data.token);
+        const permisos = payload.permisos; // Este debe coincidir con el campo que pusiste en el backend al firmar el token
+        const activo = payload.estado;
+        localStorage.setItem('cedula', payload.cedula)
+        if(!activo){
+            alert(`El usuario actualmente se encuentra inactivo, favor comunicarse con un administrativo`)
+            return;
+        }
+      alert('Inicio de sesión exitoso');
 
-      // Guardamos el token
-      localStorage.setItem("token", token);
+      // Ejemplo: guardar el token en localStorage
+      localStorage.setItem("token", data.token);
 
-      // Decodificamos el token para obtener el rol
-      const decoded = window.jwt_decode(token); // gracias al <script> en index.html
-      const rol = decoded.rol || decoded.role || decoded.tipo || "desconocido";
-
-      // Redirigir según el rol
-      if (rol === "admin") {
-        history.push("/inicioAdmin");
-      } else if (rol === "medico") {
-        history.push("/medico");
-      } else if (rol === "paciente") {
-        history.push("/paciente");
-      } else {
-        alert("Rol desconocido");
-      }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      // Redireccionar si quieres, por ejemplo a "/dashboard"
+        switch (permisos) {
+            case 'admin':
+            window.location.href = '../InicioAdmin';
+            break;
+            case 'medico':
+            window.location.href = '../InicioMedi';
+            break;
+            case 'user':
+            window.location.href = '../InicioPaci';
+            break;
+            case 'super-user':
+            window.location.href = '../InicioAdmin';
+            break;
+            case 'farmaceutico':
+            window.location.href = '../InicioFarma';
+            break;
+            default:
+            alert('Permiso no reconocido');
+        }
+    } catch (err) {
+      setError("Ocurrió un error de red");
+      console.error(err);
     }
   };
 
   return (
     <div className="login-container">
-      <form className="login-form" onSubmit={handleLogin}>
-        <label htmlFor="correo">Email</label>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <label htmlFor="email">Email address</label>
         <input
           type="email"
-          id="correo"
+          id="email"
           placeholder="Enter email"
+          required
           value={correo}
           onChange={(e) => setCorreo(e.target.value)}
-          required
         />
 
         <label htmlFor="password">Password</label>
@@ -72,38 +86,28 @@ function LoginForm() {
           type="password"
           id="password"
           placeholder="Enter password"
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
 
-        <button type="submit">Login</button>
+        <div className="checkbox-container">
+          <input type="checkbox" id="remember" />
+          <label htmlFor="remember">Remember me</label>
+        </div>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <button type="submit">Submit</button>
+
+        <div className="links">
+          <p className="link">
+            Are you an Admin? <Link to="/Administrativos">Register</Link>
+          </p>
+        </div>
       </form>
     </div>
   );
 }
 
 export default LoginForm;
-
-const decoded = window.jwt_decode(token);
-
-const rol = decoded.permisos; // ← aquí está el rol del usuario
-const cedula = decoded.cedula;
-const correo = decoded.correo;
-const estado = decoded.estado;
-
-// Puedes guardar esto también si lo necesitas
-localStorage.setItem("userRol", rol);
-localStorage.setItem("cedula", cedula);
-localStorage.setItem("correo", correo);
-
-if (rol === "admin") {
-  history.push("/inicioAdmin");
-} else if (rol === "medico") {
-  history.push("/medico");
-} else if (rol === "paciente") {
-  history.push("/paciente");
-} else {
-  alert("Rol no reconocido: " + rol);
-}
-

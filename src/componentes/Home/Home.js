@@ -39,33 +39,3 @@ function Home() {
 }
 export default Home;
 
-
-const handleLogin = async () => {
-  const response = await fetch("http://localhost:3000/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email: correo,
-      password: contrasena
-    })
-  });
-
-  const data = await response.json();
-
-  if (data.token) {
-    localStorage.setItem("token", data.token); // Guarda el token
-    const decoded = jwt_decode(data.token); // Decodifica el token
-    console.log("Usuario:", decoded);
-
-    // Aquí podrías redirigir según tipo de usuario:
-    if (decoded.rol === "admin") {
-      window.location.href = "/InicioAdmin";
-    } else if (decoded.rol === "paciente") {
-      window.location.href = "/InicioPaciente";
-    }
-  } else {
-    alert("Login incorrecto");
-  }
-};
