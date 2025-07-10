@@ -3,13 +3,17 @@ import { Link } from "react-router-dom";
 import "./AgendarCita.css";
 
 function AgendarCita() {
+  const cedula_admin = localStorage.getItem('cedula');
   const [formData, setFormData] = useState({
     departamento: "",
     edificio: "",
     cod_consultorio: "",
     id_agenda: "",
-    id_paciente: ""
+    id_paciente: "",
+    cedula_admin
   });
+
+  const [infoCita, setInfoCita] = useState(null); // Guardará los datos de la cita
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -24,13 +28,14 @@ function AgendarCita() {
       edificio: formData.edificio,
       cod_consultorio: formData.cod_consultorio,
       id_agenda: parseInt(formData.id_agenda),
-      id_paciente: formData.id_paciente
+      id_paciente: formData.id_paciente,
+      cedula_admin: cedula_admin
     };
 
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/dep-cardiologia/crearCita", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/dep-cardiologia/crearCita", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,8 +52,8 @@ function AgendarCita() {
 
       const data = await response.json();
       console.log("Cita creada:", data);
+      setInfoCita(data.cita); // ✅ accedes directamente al objeto cita 
       alert("Cita médica registrada correctamente");
-
     } catch (error) {
       console.error("Error al crear la cita:", error);
       alert("Error de red o servidor");
@@ -78,7 +83,7 @@ function AgendarCita() {
 
             <label htmlFor="id_agenda">Id. Agenda</label>
             <input
-              type="number"
+              type="text"
               id="id_agenda"
               placeholder="Ingrese número de agenda"
               required
@@ -128,6 +133,21 @@ function AgendarCita() {
 
             <button type="submit">Guardar</button>
           </form>
+
+          {/* Cuadro resumen de la cita */}
+          {infoCita && (
+            <div className="resumen-cita">
+              <h3>Resumen de la Cita Médica</h3>
+              <p><strong>ID Cita:</strong> {infoCita.id_cita}</p>
+              <p><strong>Paciente:</strong> {infoCita.id_paciente}</p>
+              <p><strong>Médico:</strong> {infoCita.nom_med}</p>
+              <p><strong>Fecha:</strong> {infoCita.fecha}</p>
+              <p><strong>Hora:</strong> {infoCita.hora_inicio} - {infoCita.hora_fin}</p>
+              <p><strong>Consultorio:</strong> {infoCita.cod_consultorio}</p>
+              <p><strong>Departamento:</strong> {infoCita.departamento}</p>
+              <p><strong>Edificio:</strong> {infoCita.edificio}</p>
+            </div>
+          )}
         </div>
       </main>
     </>

@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./InicioAdmin.css"; // o tu archivo CSS de estilos
+import { validarAcceso } from "../../validarAcceso";
 
 function InicioAdmin() {
+  useEffect(() => {
+        (async () => {
+          await validarAcceso(["admin", "super-user"]);
+        })();
+      }, []);
   return (
     <>
     <header className="header">
@@ -32,6 +38,7 @@ function InicioAdmin() {
             <Link to="/AgendarCita" className="menu-button">Schedule appointments</Link>
             <Link to="/ConsultarAgendaMed" className="menu-button">Consult doctors' schedules</Link>
             <Link to="/CrearAgenda" className="menu-button">Create agendas for doctors</Link>
+            <Link to="/ConsulMedicos" className="menu-button">Consult doctors</Link>
         </div>
         <div className="medicines">
             <img className="medica-img" src="/img/medica.png" alt="medicamneto Icon" />

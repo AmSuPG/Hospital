@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./RegFarmacias.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function RegFarmacias() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,12 @@ function RegFarmacias() {
     carrera: "",
     telefono: ""
   });
+
+  useEffect(() => {
+      (async () => {
+        await validarAcceso(["admin", "super-user"]);
+      })();
+    }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -34,7 +41,7 @@ function RegFarmacias() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/farmacias/regFarmacia", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/farmacias/regFarmacia", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,7 +126,7 @@ function RegFarmacias() {
 
             <label htmlFor="telfarma">Teléfono</label>
             <input
-              type="number"
+              type="text"
               id="telfarma"
               placeholder="Ingrese el teléfono"
               required

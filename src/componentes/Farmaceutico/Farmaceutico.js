@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Farmaceutico.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function Farmaceutico() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,12 @@ function Farmaceutico() {
     licencia: "",
     farmacia: ""
   });
+  
+  useEffect(() => {
+      (async () => {
+        await validarAcceso(["admin", "super-user"]);
+      })();
+    }, []);
 
   const handleChange = (e, index = null) => {
     const { id, value } = e.target;
@@ -49,7 +56,7 @@ function Farmaceutico() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/farmacias/regFarmaceutico", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/farmacias/regFarmaceutico", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

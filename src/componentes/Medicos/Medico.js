@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Medico.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function Medico() {
   const [formData, setFormData] = useState({
@@ -12,13 +13,17 @@ function Medico() {
     carrera: "",
     password: "",
     telefonos: ["", ""],
-    fecha_ingreso: "",
     salario: "",
     hora_inicio: "",
     hora_fin: "",
     departamento: "",
     registro_medico: "",
   });
+  useEffect(() => {
+    (async () => {
+      await validarAcceso(["admin", "super-user"]);
+    })();
+  }, []);
 
   const handleChange = (e, index) => {
     const { id, value } = e.target;
@@ -35,7 +40,7 @@ function Medico() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
+    const data = {createEmpleadoMedicoDto:{
       userDto: {
         cedula: formData.cedula,
         nombre: formData.nombre,
@@ -55,12 +60,17 @@ function Medico() {
       medicoDto: {
         departamento: formData.departamento,
         registro_medico: formData.registro_medico,
-      },
+      }
+    }
     };
 
     try {
+      let url;
+      if(formData.departamento === 'cardiologia'){
+        url = "https://hospitalproyect-production.up.railway.app/dep-cardiologia/regCardio"
+      }
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/empleados/regmedico", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,9 +140,6 @@ function Medico() {
             <label htmlFor="telefono">Phones</label>
             <input type="tel" id="telefono" placeholder="3227790285" value={formData.telefonos[0]} onChange={(e) => handleChange(e, 0)} required />
             <input type="tel" id="telefono" placeholder="3227790285" value={formData.telefonos[1]} onChange={(e) => handleChange(e, 1)} />
-
-            <label htmlFor="fecha_ingreso">Fecha de ingreso</label>
-            <input type="date" id="fecha_ingreso" value={formData.fecha_ingreso} onChange={handleChange} required />
 
             <label htmlFor="salario">Salario</label>
             <input type="number" id="salario" placeholder="5000000" value={formData.salario} onChange={handleChange} required />

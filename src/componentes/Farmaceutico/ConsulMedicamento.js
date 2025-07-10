@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "./ConsulMedicamento.css";
 
@@ -9,8 +8,27 @@ function ConsulMedicamento() {
 
   const handleBuscar = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/medicamentos?query=${busqueda}`);
-      setMedicamentos(response.data);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `https://hospitalproyect-production.up.railway.app/farmacias/medicamento/${busqueda}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log(data)
+      // Verificar que es un array antes de setear
+      const medicamentosArray = Array.isArray(data)
+        ? data
+        : data.medicamentos || [];
+
+      setMedicamentos(medicamentosArray);
     } catch (error) {
       console.error("Error al buscar medicamentos:", error);
       setMedicamentos([]);
@@ -63,7 +81,7 @@ function ConsulMedicamento() {
             ) : (
               medicamentos.map((m, index) => (
                 <tr key={index}>
-                  <td>{m.nombre}</td>
+                  <td>{m.nombre_med}</td>
                   <td>{m.concentracion}</td>
                   <td>{m.presentacion}</td>
                   <td>{m.precio}</td>

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Paciente.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function Paciente() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,13 @@ function Paciente() {
     fecha_nac: "",
     telefonos: ["", ""]
   });
+
+  // Verificación de token y permisos
+  useEffect(() => {
+  (async () => {
+    await validarAcceso(["admin", "super-user"]);
+    })();
+  }, []);
 
   const handleChange = (e, index = null) => {
     const { id, value } = e.target;
@@ -51,7 +59,7 @@ function Paciente() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(payload)
       });
@@ -108,7 +116,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="nombre">Name</label>
+            <label htmlFor="nombre">Nombre</label>
             <input
               type="text"
               id="nombre"
@@ -118,17 +126,16 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="fecha_nac">Birthdate</label>
+            <label htmlFor="fecha_nac">Fecha de nacimiento</label>
             <input
               type="date"
               id="fecha_nac"
-              placeholder="Ingrese su fecha de nacimiento"
               required
               value={formData.fecha_nac}
               onChange={handleChange}
             />
 
-            <label htmlFor="correo">Email</label>
+            <label htmlFor="correo">Correo</label>
             <input
               type="email"
               id="correo"
@@ -138,7 +145,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="calle">Street</label>
+            <label htmlFor="calle">Calle</label>
             <input
               type="text"
               id="calle"
@@ -148,7 +155,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="carrera">Cr</label>
+            <label htmlFor="carrera">Carrera</label>
             <input
               type="text"
               id="carrera"
@@ -158,7 +165,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Contraseña</label>
             <input
               type="password"
               id="password"
@@ -168,7 +175,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="telefono">Phones</label>
+            <label htmlFor="telefono">Teléfonos</label>
             <input
               type="tel"
               id="telefono"
@@ -180,12 +187,12 @@ function Paciente() {
             <input
               type="tel"
               id="telefono"
-              placeholder="3227790285"
+              placeholder="Otro número (opcional)"
               value={formData.telefonos[1]}
               onChange={(e) => handleChange(e, 1)}
             />
 
-            <button type="submit">Register me</button>
+            <button type="submit">Registrar</button>
           </form>
         </div>
       </main>

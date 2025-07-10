@@ -1,19 +1,38 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "./ConsulCita.css";
 
 function ConsulCita() {
-  const [idPaciente, setIdPaciente] = useState("");
   const [citas, setCitas] = useState([]);
+  const [mensaje, setMensaje] = useState("");
 
   const handleBuscar = async () => {
+    const cedula = localStorage.getItem("cedula");
+    const token = localStorage.getItem("token");
+
+    if (!cedula || !token) {
+      setMensaje("⚠️ No se encontró la cédula o el token.");
+      return;
+    }
+
     try {
-      const response = await axios.get(`http://localhost:3000/api/citas/${idPaciente}`);
-      setCitas(response.data);
+      const response = await fetch(`https://hospitalproyect-production.up.railway.app/pacientes/getCitas/${cedula}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al obtener citas");
+      }
+
+      const data = await response.json();
+      setCitas(data);
+      setMensaje("");
     } catch (error) {
-      console.error("Error al buscar citas:", error);
+      console.error(error);
       setCitas([]);
+      setMensaje("❌ No se encontraron citas para este paciente.");
     }
   };
 
@@ -25,48 +44,50 @@ function ConsulCita() {
           <Link to="/">
             <img src="/img/home.png" alt="Inicio" />
           </Link>
-          <div className="back">
-            <Link to="/InicioPaci">
-              <img className="back1" src="/img/back.png" alt="Volver a Paciente" />
-            </Link>
-          </div>
+          <Link to="/InicioPaci">
+            <img className="back1" src="/img/back.png" alt="Volver" />
+          </Link>
         </div>
       </header>
 
-      <div className="citas-container">
-        <h2>Citas programadas</h2>
+      <div className="agenda-container">
+        <h2>Mis Citas Médicas</h2>
 
         <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Ingrese Cédula del paciente"
-            value={idPaciente}
-            onChange={(e) => setIdPaciente(e.target.value)}
-          />
-          <button onClick={handleBuscar}>Buscar</button>
+          <button onClick={handleBuscar}>Consultar Citas</button>
         </div>
 
-        <table className="citas-table">
+        {mensaje && <div className="mensaje">{mensaje}</div>}
+
+        <table className="agenda-table">
           <thead>
             <tr>
-              <th>ID Paciente</th>
-              <th>Edificio</th>
+              <th>ID Cita</th>
               <th>Departamento</th>
+              <th>Edificio</th>
               <th>Consultorio</th>
+              <th>Fecha</th>
+              <th>Hora Inicio</th>
+              <th>Hora Fin</th>
+              <th>Médico</th>
             </tr>
           </thead>
           <tbody>
             {citas.length === 0 ? (
               <tr>
-                <td colSpan="4">No hay resultados</td>
+                <td colSpan="8">No hay citas registradas</td>
               </tr>
             ) : (
               citas.map((cita, index) => (
                 <tr key={index}>
-                  <td>{cita.id_paciente}</td>
-                  <td>{cita.edificio}</td>
-                  <td>{cita.departamento}</td>
-                  <td>{cita.consultorio}</td>
+                  <td>{cita.citas_id_cita}</td>
+                  <td>{cita.citas_departamento}</td>
+                  <td>{cita.citas_edificio}</td>
+                  <td>{cita.citas_cod_consultorio}</td>
+                  <td>{new Date(cita.citas_fecha).toLocaleDateString()}</td>
+                  <td>{cita.citas_hora_inicio}</td>
+                  <td>{cita.citas_hora_fin}</td>
+                  <td>{cita.citas_nom_med}</td>
                 </tr>
               ))
             )}

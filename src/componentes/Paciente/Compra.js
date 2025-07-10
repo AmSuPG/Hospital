@@ -1,38 +1,47 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./Compra.css";
 import { Link } from "react-router-dom";
 
 function Compra() {
-  const [busqueda, setBusqueda] = useState("");
-  const [medicamento, setMedicamento] = useState(null);
+  const [idMedicamento, setIdMedicamento] = useState("");
+  const [nombreFarmacia, setNombreFarmacia] = useState("");
   const [cantidad, setCantidad] = useState(1);
   const [mensaje, setMensaje] = useState("");
-  const [farmaciaSeleccionada, setFarmaciaSeleccionada] = useState("");
-
-  const handleBuscar = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/api/medicamentos/${busqueda}`);
-      setMedicamento(response.data);
-      setFarmaciaSeleccionada(response.data.farmacia || ""); // Puedes ajustar este campo según tu backend
-      setMensaje("");
-    } catch (error) {
-      setMedicamento(null);
-      setMensaje("❌ Medicamento no encontrado");
-    }
-  };
 
   const handleComprar = async () => {
-    try {
-      const compraData = {
-        medicamento_id: medicamento.id,
-        cantidad: cantidad,
-        farmacia: farmaciaSeleccionada,
-      };
+    const token = localStorage.getItem("token");
+    const cedula = localStorage.getItem("cedula");
 
-      await axios.post("http://localhost:3000/api/compras", compraData);
+    if (!token || !cedula) {
+      alert("⚠️ Usuario no autenticado.");
+      return;
+    }
+
+    const compraData = {
+      cedula: cedula,
+      id_medicamento: idMedicamento,
+      nombre_farmacia: nombreFarmacia,
+      cantidad: Number(cantidad)
+    };
+
+    try {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/farmacias/compraMedicamento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(compraData)
+      });
+
+      if (!response.ok) throw new Error("Error en la compra");
+
       setMensaje("✅ Compra registrada exitosamente");
+      setIdMedicamento("");
+      setNombreFarmacia("");
+      setCantidad(1);
     } catch (error) {
+      console.error(error);
       setMensaje("❌ Error al registrar la compra");
     }
   };
@@ -54,38 +63,35 @@ function Compra() {
       </header>
 
       <div className="compra-container">
-        <h2>Compra de Medicamentos</h2>
+        <h2>Registrar Compra de Medicamento</h2>
 
-        <div className="search-bar">
+        <div className="form-compra">
+          <label>ID del Medicamento:</label>
           <input
             type="text"
-            placeholder="Nombre o ID del medicamento"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={idMedicamento}
+            onChange={(e) => setIdMedicamento(e.target.value)}
+            placeholder="Ingrese el ID del medicamento"
           />
-          <button onClick={handleBuscar}>Buscar</button>
+
+          <label>Nombre de la Farmacia:</label>
+          <input
+            type="text"
+            value={nombreFarmacia}
+            onChange={(e) => setNombreFarmacia(e.target.value)}
+            placeholder="Ingrese el nombre de la farmacia"
+          />
+
+          <label>Cantidad:</label>
+          <input
+            type="number"
+            min="1"
+            value={cantidad}
+            onChange={(e) => setCantidad(e.target.value)}
+          />
+
+          <button onClick={handleComprar}>Comprar</button>
         </div>
-
-        {medicamento && (
-          <div className="med-info">
-            <p><strong>Nombre:</strong> {medicamento.nombre}</p>
-            <p><strong>Concentración:</strong> {medicamento.concentracion}</p>
-            <p><strong>Presentación:</strong> {medicamento.presentacion}</p>
-            <p><strong>Precio:</strong> ${medicamento.precio}</p>
-            <p><strong>Farmacia:</strong> {medicamento.farmacia}</p>
-
-            <div className="form-compra">
-              <label>Cantidad:</label>
-              <input
-                type="number"
-                min="1"
-                value={cantidad}
-                onChange={(e) => setCantidad(e.target.value)}
-              />
-              <button onClick={handleComprar}>Comprar</button>
-            </div>
-          </div>
-        )}
 
         {mensaje && <div className="mensaje">{mensaje}</div>}
       </div>

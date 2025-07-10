@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./ConsulMedi.css";
+import "./ConsulMediMedi.css";
 
-function ConsulMedi() {
+function ConsulMediMedi() {
   const [busqueda, setBusqueda] = useState("");
   const [medicamentos, setMedicamentos] = useState([]);
 
@@ -40,7 +40,7 @@ function ConsulMedi() {
             <img src="/img/home.png" alt="Inicio" />
           </Link>
           <div className="back">
-            <Link to="/InicioAdmin">
+            <Link to="/InicioMedi">
               <img className="back1" src="/img/back.png" alt="Volver a admin" />
             </Link>
           </div>
@@ -93,4 +93,4 @@ function ConsulMedi() {
   );
 }
 
-export default ConsulMedi;
+export default ConsulMediMedi;

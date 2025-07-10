@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Administrativos.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function Admin() {
   const [formData, setFormData] = useState({
@@ -12,12 +13,16 @@ function Admin() {
     carrera: "",
     password: "",
     telefonos: ["", ""],
-    fecha_ingreso: "",
     salario: "",
     hora_inicio: "",
     hora_fin: "",
     cargo_admin: ""
   });
+  useEffect(() => {
+      (async () => {
+        await validarAcceso(["admin", "super-user"]);
+      })();
+    }, []);
 
   const handleChange = (e, index = null) => {
     const { id, value } = e.target;
@@ -190,15 +195,6 @@ function Admin() {
               placeholder="3227790285"
               value={formData.telefonos[1]}
               onChange={(e) => handleChange(e, 1)}
-            />
-
-            <label htmlFor="fecha_ingreso">Fecha de ingreso</label>
-            <input
-              type="date"
-              id="fecha_ingreso"
-              required
-              value={formData.fecha_ingreso}
-              onChange={handleChange}
             />
 
             <label htmlFor="salario">Salario</label>

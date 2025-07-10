@@ -1,7 +1,6 @@
 import React from "react";
 import "./Home.css"; 
 import LoginForm from '../Login/Login'; // <--- ¡Esta es la corrección crucial para Home.js!
-import jwt_decode from "jwt-decode";
 
 function Home() {
   return (

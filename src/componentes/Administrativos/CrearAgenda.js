@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./CrearAgenda.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function CrearAgenda() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,11 @@ function CrearAgenda() {
     hora_fin: "",
     fecha: ""
   });
+  useEffect(() => {
+        (async () => {
+          await validarAcceso(["admin", "super-user"]);
+        })();
+      }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -28,7 +34,7 @@ function CrearAgenda() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/dep-cardiologia/crearAgenda", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/dep-cardiologia/crearAgenda", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

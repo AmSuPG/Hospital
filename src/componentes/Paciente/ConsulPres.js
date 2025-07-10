@@ -1,21 +1,37 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./ConsulPres.css";
 import { Link } from "react-router-dom";
 
 function ConsulPres() {
-  const [cedula, setCedula] = useState("");
   const [prescripciones, setPrescripciones] = useState([]);
   const [mensaje, setMensaje] = useState("");
 
   const handleBuscar = async () => {
+    const cedula = localStorage.getItem("cedula");
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await axios.get(`http://localhost:3000/api/prescripciones/${cedula}`);
-      setPrescripciones(response.data);
-      setMensaje("");
+      const response = await fetch(`https://hospitalproyect-production.up.railway.app/dep-cardiologia/getPrescripciones/${cedula}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+
+      const data = await response.json();
+      if(data.length === 0){
+        setPrescripciones([]);
+        setMensaje("❌ No se encontraron prescripciones para esa cédula");
+      }else{
+        setPrescripciones(data);
+        setMensaje("");
+      }
     } catch (error) {
-      setPrescripciones([]);
-      setMensaje("❌ No se encontraron prescripciones para esa cédula");
+      console.error("Error al buscar prescripciones:", error);
     }
   };
 
@@ -39,12 +55,6 @@ function ConsulPres() {
         <h2>Consultar Prescripciones</h2>
 
         <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Ingrese la cédula del paciente"
-            value={cedula}
-            onChange={(e) => setCedula(e.target.value)}
-          />
           <button onClick={handleBuscar}>Buscar</button>
         </div>
 
@@ -61,12 +71,16 @@ function ConsulPres() {
             </thead>
             <tbody>
               {prescripciones.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.nombre_medicamento}</td>
-                  <td>{item.dosis}</td>
-                  <td>{item.instrucciones}</td>
-                </tr>
-              ))}
+                  <tr key={index}>
+                    <td>
+                      {item.medicamentos && item.medicamentos.length > 0
+                        ? item.medicamentos[0].id_medicamento
+                        : "No asociado"}
+                    </td>
+                    <td>{item.dosis}</td>
+                    <td>{item.instrucciones}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         )}

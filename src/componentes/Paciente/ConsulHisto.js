@@ -1,21 +1,39 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "./ConsulHisto.css";
 
 function ConsulHisto() {
-  const [idCita, setIdCita] = useState("");
-  const [historial, setHistorial] = useState([]);
+  const [historial, setHistorial] = useState(null);
   const [mensaje, setMensaje] = useState("");
 
   const handleBuscar = async () => {
+    const cedula = localStorage.getItem("cedula");
+    const token = localStorage.getItem("token");
+
+    if (!cedula || !token) {
+      setMensaje("⚠️ No se encontró la cédula o el token.");
+      return;
+    }
+
     try {
-      const response = await axios.get(`http://localhost:3000/api/historial/${idCita}`);
-      setHistorial(response.data);
+      const response = await fetch(`https://hospitalproyect-production.up.railway.app/pacientes/histClinic/${cedula}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al obtener historial");
+      }
+
+      const data = await response.json();
+      setHistorial(data);
       setMensaje("");
     } catch (error) {
-      setHistorial([]);
-      setMensaje("❌ No se encontró historial para esa cita");
+      console.error("Error al consultar historial:", error);
+      setHistorial(null);
+      setMensaje("❌ No se encontró historial clínico para esta cédula.");
     }
   };
 
@@ -37,34 +55,57 @@ function ConsulHisto() {
         <h2>Consultar Historial Clínico</h2>
 
         <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Ingrese el ID de la cita"
-            value={idCita}
-            onChange={(e) => setIdCita(e.target.value)}
-          />
-          <button onClick={handleBuscar}>Buscar</button>
+          <button onClick={handleBuscar}>Consultar Mi Historial</button>
         </div>
 
         {mensaje && <div className="mensaje">{mensaje}</div>}
 
-        {historial.length > 0 && (
-          <table className="historial-table">
-            <thead>
-              <tr>
-                <th>ID de Cita</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {historial.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.id_cita}</td>
-                  <td>{item.descripcion}</td>
+        {historial && (
+          <div className="historial-info">
+            <h3>Información del Historial</h3>
+            <table className="historial-table">
+              <thead>
+                <tr>
+                  <th>ID Historial</th>
+                  <th>Fecha Inicio</th>
+                  <th>Cédula Paciente</th>
+                  <th>Fecha Nacimiento</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{historial.id_historial}</td>
+                  <td>{historial.fecha_inicio}</td>
+                  <td>{historial.paciente.cedula}</td>
+                  <td>{historial.paciente.fecha_nac}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {historial.registro?.length > 0 && (
+              <>
+                <h3>Registros del Historial</h3>
+                <table className="historial-table">
+                  <thead>
+                    <tr>
+                      <th>ID Registro</th>
+                      <th>Fecha</th>
+                      <th>Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {historial.registro.map((r, i) => (
+                      <tr key={i}>
+                        <td>{r.id_registro}</td>
+                        <td>{r.fecha}</td>
+                        <td>{r.descripcion}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </div>
         )}
       </div>
     </>

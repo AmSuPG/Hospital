@@ -1,17 +1,41 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./ConsulFarma.css";
 import { Link } from "react-router-dom";
+import { validarAcceso } from "../../validarAcceso";
 
 function ConsulFarmacias() {
   const [nombreFarmacia, setNombreFarmacia] = useState("");
   const [farmacias, setFarmacias] = useState([]);
 
+  useEffect(() => {
+    (async () => {
+      await validarAcceso(["admin", "super-user", "user"]);
+    })();
+  }, []);
+
   const handleBuscar = async () => {
     try {
-      // Cambia esta URL por tu endpoint real del backend
-      const response = await axios.get(`http://localhost:3000/api/farmacias?nombre=${nombreFarmacia}`);
-      setFarmacias(response.data);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `https://hospitalproyect-production.up.railway.app/farmacias/consultarFarmacia/${nombreFarmacia}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al consultar farmacia");
+      }
+
+      const data = await response.json();
+      const farmaciasArray = Array.isArray(data) ? data : data.farmacias || [];
+
+      setFarmacias(farmaciasArray);
     } catch (error) {
       console.error("Error al buscar farmacias:", error);
       setFarmacias([]);
@@ -20,7 +44,6 @@ function ConsulFarmacias() {
 
   return (
     <>
-      {/* Header separado */}
       <header className="header">
         <div className="logo">HEALTH TRUE</div>
         <div className="home">
@@ -35,7 +58,6 @@ function ConsulFarmacias() {
         </div>
       </header>
 
-      {/* Contenedor principal */}
       <div className="farmacia-container">
         <h2>Consultar Farmacias</h2>
 

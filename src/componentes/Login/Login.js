@@ -61,6 +61,7 @@ function LoginForm() {
             break;
             default:
             alert('Permiso no reconocido');
+            window.location.href = '../'
         }
     } catch (err) {
       setError("Ocurrió un error de red");
@@ -102,8 +103,9 @@ function LoginForm() {
 
         <div className="links">
           <p className="link">
-            Are you an Admin? <Link to="/Administrativos">Register</Link>
+            Cambia tu contraseña: <Link to="Recuperacion">Cambio/Olvido de contraseña</Link>
           </p>
+
         </div>
       </form>
     </div>

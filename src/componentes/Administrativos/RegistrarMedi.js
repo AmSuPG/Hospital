@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./RegistrarMedi.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function RegistrarMedi() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,11 @@ function RegistrarMedi() {
     concentracion: "",
     precio: ""
   });
+  useEffect(() => {
+        (async () => {
+          await validarAcceso(["admin", "super-user"]);
+        })();
+      }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -28,7 +34,7 @@ function RegistrarMedi() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/farmacias/regMedicamento", {
+      const response = await fetch("https://hospitalproyect-production.up.railway.app/farmacias/regMedicamento", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

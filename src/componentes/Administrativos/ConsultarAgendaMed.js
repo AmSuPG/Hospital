@@ -1,16 +1,36 @@
-import React, { useState } from "react";
-import axios from "axios";
-import "./ConsultarAgendaMed.css";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./ConsultarAgendaMed.css";
+import { validarAcceso } from "../../validarAcceso";
 
 function AgendaMedicos() {
   const [idDoctor, setIdDoctor] = useState("");
   const [agendas, setAgendas] = useState([]);
 
+  useEffect(() => {
+    (async () => {
+      await validarAcceso(["admin", "super-user", "medico"]);
+    })();
+  }, []);
+
   const handleBuscar = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/agendas/${idDoctor}`);
-      setAgendas(response.data);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`https://hospitalproyect-production.up.railway.app/dep-cardiologia/getAgendas/${idDoctor}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al buscar agendas");
+      }
+
+      const data = await response.json();
+      const agendasArray = Array.isArray(data) ? data : data.agendas || [];
+      setAgendas(agendasArray);
     } catch (error) {
       console.error("Error al buscar agendas:", error);
       setAgendas([]);
@@ -19,7 +39,6 @@ function AgendaMedicos() {
 
   return (
     <>
-      {/* ENCABEZADO FUERA DEL CONTENEDOR CENTRAL */}
       <header className="header">
         <div className="logo">HEALTH TRUE</div>
         <div className="home">
@@ -34,7 +53,6 @@ function AgendaMedicos() {
         </div>
       </header>
 
-      {/* CONTENEDOR CENTRAL SEPARADO */}
       <div className="agenda-container">
         <h2>Agenda de Médicos</h2>
 
@@ -51,8 +69,9 @@ function AgendaMedicos() {
         <table className="agenda-table">
           <thead>
             <tr>
+              <th>ID Agenda</th>
               <th>ID Médico</th>
-              <th>Nombre Médico</th>
+              <th>Estado</th>
               <th>Fecha</th>
               <th>Hora Inicio</th>
               <th>Hora Fin</th>
@@ -61,16 +80,17 @@ function AgendaMedicos() {
           <tbody>
             {agendas.length === 0 ? (
               <tr>
-                <td colSpan="5">No hay resultados</td>
+                <td colSpan="6">No hay resultados</td>
               </tr>
             ) : (
               agendas.map((agenda, index) => (
                 <tr key={index}>
-                  <td>{agenda.id_medico}</td>
-                  <td>{agenda.nombre_medico}</td>
-                  <td>{agenda.fecha}</td>
-                  <td>{agenda.hora_inicio}</td>
-                  <td>{agenda.hora_fin}</td>
+                  <td>{agenda.agendas_id_agenda}</td>
+                  <td>{agenda.agendas_id_empleado}</td>
+                  <td>{agenda.agendas_estado}</td>
+                  <td>{new Date(agenda.agendas_fecha).toLocaleDateString()}</td>
+                  <td>{agenda.agendas_hora_inicio}</td>
+                  <td>{agenda.agendas_hora_fin}</td>
                 </tr>
               ))
             )}
