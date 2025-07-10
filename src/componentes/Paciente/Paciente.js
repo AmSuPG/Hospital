@@ -5,6 +5,7 @@ import "./Paciente.css";
 function Paciente() {
   const [formData, setFormData] = useState({
     cedula: "",
+    fecha_expedicion: "",
     correo: "",
     nombre: "",
     calle: "",
@@ -32,6 +33,7 @@ function Paciente() {
     const payload = {
       userDto: {
         cedula: formData.cedula,
+        fecha_expedicion: formData.fecha_expedicion,
         correo: formData.correo,
         nombre: formData.nombre,
         calle: formData.calle,
@@ -43,13 +45,13 @@ function Paciente() {
         fecha_nac: formData.fecha_nac
       }
     };
-    console.log(localStorage.getItem('token'))
+
     try {
       const response = await fetch("https://hospitalproyect-production.up.railway.app/pacientes/regPaciente", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(payload)
       });
@@ -82,7 +84,7 @@ function Paciente() {
       <main className="body">
         <div className="register-container">
           <div className="medico">
-            <img className="pac-img" src="/img/paciente.webp" alt="" />
+            <img className="pac-img" src="/img/paciente.webp" alt="Paciente" />
           </div>
           <form className="register-form" onSubmit={handleSubmit}>
             <h1>Registra un nuevo paciente</h1>
@@ -94,6 +96,15 @@ function Paciente() {
               placeholder="Ingrese su cédula"
               required
               value={formData.cedula}
+              onChange={handleChange}
+            />
+
+            <label htmlFor="fecha_expedicion">Fecha de expedición</label>
+            <input
+              type="date"
+              id="fecha_expedicion"
+              required
+              value={formData.fecha_expedicion}
               onChange={handleChange}
             />
 
@@ -147,7 +158,7 @@ function Paciente() {
               onChange={handleChange}
             />
 
-            <label htmlFor="password"> Password </label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"

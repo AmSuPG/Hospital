@@ -5,6 +5,7 @@ import "./Administrativos.css";
 function Admin() {
   const [formData, setFormData] = useState({
     cedula: "",
+    fecha_expedicion: "",
     nombre: "",
     correo: "",
     calle: "",
@@ -36,6 +37,7 @@ function Admin() {
     const payload = {
       userDto: {
         cedula: formData.cedula,
+        fecha_expedicion: formData.fecha_expedicion,
         nombre: formData.nombre,
         correo: formData.correo,
         calle: formData.calle,
@@ -91,7 +93,7 @@ function Admin() {
           </Link>
         </div>
         <div className="back">
-          <Link to="/">
+          <Link to="/inicioAdmin">
             <img className="back1" src="/img/back.png" alt="Volver a inicio administrativo" />
           </Link>
         </div>
@@ -99,47 +101,143 @@ function Admin() {
       <main className="body">
         <div className="register-container">
           <div className="admin">
-            <img className="admin-img" src="/img/admin.webp" alt="" />
+            <img className="admin-img" src="/img/admin.webp" alt="Administrador" />
           </div>
           <form className="register-form" onSubmit={handleSubmit}>
             <h1>Registra un nuevo administrador</h1>
 
             <label htmlFor="cedula">ID</label>
-            <input type="text" id="cedula" placeholder="Ingrese su cédula" required value={formData.cedula} onChange={handleChange} />
+            <input
+              type="text"
+              id="cedula"
+              placeholder="Ingrese su cédula"
+              required
+              value={formData.cedula}
+              onChange={handleChange}
+            />
+
+            <label htmlFor="fecha_expedicion">Fecha de expedición</label>
+            <input
+              type="date"
+              id="fecha_expedicion"
+              required
+              value={formData.fecha_expedicion}
+              onChange={handleChange}
+            />
 
             <label htmlFor="nombre">Name</label>
-            <input type="text" id="nombre" placeholder="Ingrese su nombre" required value={formData.nombre} onChange={handleChange} />
+            <input
+              type="text"
+              id="nombre"
+              placeholder="Ingrese su nombre"
+              required
+              value={formData.nombre}
+              onChange={handleChange}
+            />
 
             <label htmlFor="correo">Email</label>
-            <input type="email" id="correo" placeholder="Ingrese su correo" required value={formData.correo} onChange={handleChange} />
+            <input
+              type="email"
+              id="correo"
+              placeholder="Ingrese su correo"
+              required
+              value={formData.correo}
+              onChange={handleChange}
+            />
 
             <label htmlFor="calle">Street</label>
-            <input type="text" id="calle" placeholder="Ej: 41-28" required value={formData.calle} onChange={handleChange} />
+            <input
+              type="text"
+              id="calle"
+              placeholder="Ej: 41-28"
+              required
+              value={formData.calle}
+              onChange={handleChange}
+            />
 
             <label htmlFor="carrera">Cr</label>
-            <input type="text" id="carrera" placeholder="Ej: 99B" required value={formData.carrera} onChange={handleChange} />
+            <input
+              type="text"
+              id="carrera"
+              placeholder="Ej: 99B"
+              required
+              value={formData.carrera}
+              onChange={handleChange}
+            />
 
-            <label htmlFor="password"> Password </label>
-            <input type="password" id="password" placeholder="Ingrese su contraseña" required value={formData.password} onChange={handleChange} />
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Ingrese su contraseña"
+              required
+              value={formData.password}
+              onChange={handleChange}
+            />
 
             <label htmlFor="telefono">Phones</label>
-            <input type="tel" id="telefono" placeholder="3227790285" required value={formData.telefonos[0]} onChange={(e) => handleChange(e, 0)} />
-            <input type="tel" id="telefono" placeholder="3227790285" value={formData.telefonos[1]} onChange={(e) => handleChange(e, 1)} />
+            <input
+              type="tel"
+              id="telefono"
+              placeholder="3227790285"
+              required
+              value={formData.telefonos[0]}
+              onChange={(e) => handleChange(e, 0)}
+            />
+            <input
+              type="tel"
+              id="telefono"
+              placeholder="3227790285"
+              value={formData.telefonos[1]}
+              onChange={(e) => handleChange(e, 1)}
+            />
 
             <label htmlFor="fecha_ingreso">Fecha de ingreso</label>
-            <input type="date" id="fecha_ingreso" required value={formData.fecha_ingreso} onChange={handleChange} />
+            <input
+              type="date"
+              id="fecha_ingreso"
+              required
+              value={formData.fecha_ingreso}
+              onChange={handleChange}
+            />
 
             <label htmlFor="salario">Salario</label>
-            <input type="number" id="salario" placeholder="5000000" required value={formData.salario} onChange={handleChange} />
+            <input
+              type="number"
+              id="salario"
+              placeholder="5000000"
+              required
+              value={formData.salario}
+              onChange={handleChange}
+            />
 
             <label htmlFor="hora_inicio">Hora de inicio</label>
-            <input type="time" id="hora_inicio" required value={formData.hora_inicio} onChange={handleChange} />
+            <input
+              type="time"
+              id="hora_inicio"
+              required
+              value={formData.hora_inicio}
+              onChange={handleChange}
+            />
 
             <label htmlFor="hora_fin">Hora de fin</label>
-            <input type="time" id="hora_fin" required value={formData.hora_fin} onChange={handleChange} />
+            <input
+              type="time"
+              id="hora_fin"
+              required
+              value={formData.hora_fin}
+              onChange={handleChange}
+            />
 
             <label htmlFor="cargo_admin">Cargo del administrador</label>
-            <input type="text" id="cargo_admin" placeholder="Ej: Coordinador" required value={formData.cargo_admin} onChange={handleChange} />
+            <input
+              type="text"
+              id="cargo_admin"
+              placeholder="Ej: Coordinador"
+              required
+              value={formData.cargo_admin}
+              onChange={handleChange}
+            />
 
             <button type="submit">Register me</button>
           </form>
