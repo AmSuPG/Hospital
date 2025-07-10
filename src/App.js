@@ -25,6 +25,7 @@ import ConsulPres from "./componentes/Paciente/ConsulPres";
 import ConsulHisto from "./componentes/Paciente/ConsulHisto";
 import RegLote from "./componentes/Farmaceutico/RegLote";
 import ConsulMedicamento from "./componentes/Farmaceutico/ConsulMedicamento";
+import Recuperacion from "./componentes/Login/Recuperacion";
 
 function App() {
   return (
@@ -56,6 +57,8 @@ function App() {
         <Route path="/ConsulHisto" component={ConsulHisto} />
         <Route path="/RegLote" component={RegLote} />
         <Route path="/ConsulMedicamento" component={ConsulMedicamento} />
+        <Route path="/Recuperacion" component={Recuperacion} />
+        {/* Add more routes as needed */}
       </Switch>
     </Router>
   );
